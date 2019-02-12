@@ -86,6 +86,37 @@ ui <- fluidPage(
                         mainPanel(
                           plotOutput("veg_col")
                         )
+                      )),
+             
+             
+             # Tab 4: North Parcel
+             
+             tabPanel("North Parcel",
+                      h1("North Parcel"),
+                      h2("Hydroperiod Data"),
+                
+                      
+                      # Sidebar with a select input for pool and date range input 
+                      sidebarLayout(
+                        sidebarPanel(
+                          
+                          selectInput("pool", 
+                                      "Select vernal pool:",
+                                      choices = c("Phase 1", "Tadpole", "Redtail", "Whitetail 1", "Whitetail 2", "Creekside", "Mini South")),
+                          dateRangeInput("dates",
+                                         label = "Select date range"),
+                          
+                          hr(),
+                          fluidRow(column(4, verbatimTextOutput("value"))),
+                          radioButtons("graph", 
+                                       "Select graph:",
+                                       choices = c("Hydroperiod", "Vegetation Composition"))
+                        ),
+                        
+                        # Show a plot of the generated hydroperiod
+                        mainPanel(
+                          plotOutput("graph")
+                        )
                       ))
              
   )
