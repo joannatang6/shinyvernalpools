@@ -11,6 +11,8 @@ library(shiny)
 library(tidyverse)
 library(shinythemes)
 library(RColorBrewer)
+library(knitr)
+library(kableExtra)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -144,6 +146,65 @@ server <- function(input, output) {
   
   output$veg_col <- renderPlot({
     # generate pool based on input$pool from ui.R (X replace faithful with df)
+    
+    # Manzanita data wrangling
+    
+    # Read in data
+    manzanita_veg_master <- read_csv("manzanita_03_06.csv")
+    metadata_master <- read_csv("metadata.csv")
+    
+    # Reformat metadata so it can be full_join-ed to data
+    metadata <- metadata_master %>% 
+      rename(Species_Abbr = Species, Species = Species_Full_Name)
+    
+    # Convert manzanita_03_06 into tidy format, join with species metadata, convert day/month/year columns to "date" column, replace NAs with 0s
+    manzanita_veg <- gather(filter(manzanita_veg_master, Pool != "NA"), key = "Transect_Distance", value = "Percent_Cover", -c(Pool, Day, Month, Year, Species, Transect_Direction))
+    manzanita_veg <- full_join(manzanita_veg, metadata) %>% 
+      mutate(date = paste(Month, Year, sep="-" )) %>% 
+      mutate_all(funs(replace(., is.na(.), 0)))
+    
+    # Make separate dataframes for each pool
+    
+    san_miguel_veg <- filter(manzanita_veg, Pool == "San Miguel")
+    
+    santa_cruz_veg <- filter(manzanita_veg, Pool == "Santa Cruz")
+    
+    santa_rosa_veg <- filter(manzanita_veg, Pool == "Santa Rosa")
+    
+    santa_barbara_veg <- filter(manzanita_veg, Pool == "Santa Barbara")
+    
+    santa_catalina_veg <- filter(manzanita_veg, Pool == "Santa Catalina")
+    
+    # Manzanita: San Miguel
+    # Aggregate San Miguel data
+    san_miguel_veg_summary <- san_miguel_veg %>% 
+      group_by(Species, date, Native_Status) %>% 
+      summarize(
+        mean_percentage = mean(Percent_Cover)
+      )
+    
+    # Aggregate percentages
+    san_miguel_line <- ggplot(san_miguel_veg_summary, aes(x = date, y = mean_percentage)) +
+      geom_line(aes(color = Species, group = Species)) +
+      theme(axis.text.x = element_text(angle = 90)) +
+      labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+    san_miguel_line
+    
+    # Native vs. exotic
+    san_miguel_native <- san_miguel_veg_summary %>% 
+      group_by(Native_Status, date) %>% 
+      summarize(
+        total = sum(mean_percentage)
+      ) %>%
+      filter(Native_Status != 0)
+    
+    # Aggregate
+    san_miguel_native_line <- ggplot(san_miguel_native, aes(x = date, y = total)) +
+      geom_line(aes(color = Native_Status, group = Native_Status)) +
+      theme(axis.text.x = element_text(angle = 90)) +
+      labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+    san_miguel_native_line
+    
     ggplot(faithful, aes(x = waiting, y = eruptions)) +
       geom_col(color = input$year)
   })
