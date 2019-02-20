@@ -1,0 +1,199 @@
+﻿Species,Species_Full_Name,Native_Status,Growth_Form,Bloom_Start,Bloom_End,Dominant_Zone,Max_Height,Familiy,Growth_Habit,Wetland_Obligate,Disturbance_Favored
+ALSA,Alopecurus saccatus,N,A,3,5,,,Poaceae,graminoid,Y,N
+ALTR,Alisma triviale,N,P,7,11,C,,Alismataceae,forb,Y,N
+ANNU,Antirrhinum nuttallianum,E,AP,5,7,,,Plantaginaceae,forb,N,N
+ASFA,Asclepias fascicularis ,N,P,4,7,,,Apocynaceae,forb,N,N
+BOMA,Bolboschoenus maritimus,N,P,8,9,C,,Cyperaceae,graminoid,Y,N
+BRACHDI,Brachypodium distachyon,E,AP,4,7,,40,Poaceae,graminoid,N,Y
+BRDI,Bromus diandrus,E,A,4,6,U,120,Poaceae,graminoid,N,Y
+BRHO,Bromus hordeaceus ,E,A,4,5,U,65,Poaceae,graminoid,N,Y
+BRMA,Bromus madritensis,E,A,2,3,U,50,Poaceae,graminoid,N,Y
+BRNI,Brassica nigra,E,A,4,7,,,Brassicaceae,forb,N,Y
+CAPR,Carex praegracilis,N,P,5,6,C,,Cyperaceae,graminoid,N,N
+CAPY,Carduus pycnocephalus,E,A,2,7,,,Asteraceae,forb,Y,Y
+CEPA,Centromadia parryi ssp. australis ,N,A,5,11,U,,Asteraceae,forb,Y,N
+CRSC,Crypsis schoenoides,E,A,6,10,,,Poaceae,graminoid,Y,Y
+CRSE,Croton setigerus,N,A,5,10,,,Euphorbaceae,forb,N,N
+CYER,Cyperus eragrostis,N,P,5,9,C,90,Poaceae,graminoid,Y,N
+DEFA,Deinandra fasciculata,N,A,5,10,,,Asteraceae,forb,Y,N
+DIMI,Dichondra micrantha,E,P,4,6,,,Convolvulaceae,forb,Y,N
+DISP,Distichlis spicata,N,P,7,8,T,,Poaceae,graminoid,Y,N
+ELGL,Elymus glaucus,N,P,5,7,U,,Poaceae,graminoid,Y,N
+ELMA,Eleocharis machrostachya,N,P,5,6,C,100,Cyperaceae,graminoid,Y,N
+EPBR,Epilobium brachycarphum,N,A,6,10,,,Onagraceae,forb,N,N
+ERCA,Erigeron canadensis,N,A,6,9,,350,Asteraceae,forb,Y,Y
+ERCI,Erodium cicutarium,E,A,2,5,,,Geraniaceae,forb,N,Y
+ERVA,Eryngium vaseyi,N,P,5,6,C,,Apiaceae,forb,Y,N
+ESCA,Eschscholzia californica,N,AP,2,9,,60,Papaveraceae,forb,N,N
+EUSE,Euphorbia serpens,E,A,6,9,,,Euphorbaceae,forb,N,N
+EXCA,Extriplex californica,N,P,3,5,,,Chenopodiaceae,forb,N,N
+FEMY,Festuca myuros ,E,A,2,5,U,,Poaceae,graminoid,N,N
+FEPE,Festuca perennis,E,AP,5,9,,,Poaceae,graminoid,N,N
+FRSA,Frankenia salina,N,P,5,10,,,Frankeniaceae,subshrub,Y,N
+GEDI,Geranium dissectum  ,E,A,3,10,,,Geraniaceae,forb,N,N
+HEEC,Helminthotheca echiodes,E,AP,6,12,,,Asteraceae,forb,N,Y
+HEGR,Heterotheca grandifolia,N,AP,1,12,,,Asteraceae,forb,N,N
+HOBR,Hordeum brachyantherum,N,P,6,7,,,Poaceae,graminoid,Y,N
+HOBRBR,Hordeum brachyantherum,N,P,6,7,,,Poaceae,graminoid,Y,N
+HYGL,Hypochaeris glabra,E,A,3,6,,,Asteraceae,forb,N,Y
+HYRA,Hypochaeris radicata,E,P,4,12,,,Asteraceae,forb,Y,N
+JUBU,Juncus bufonius,N,,,,,,,,,
+JUME,Juncus mexicanus,N,,,,,,,,,
+JUOC,Juncus occidentalis,N,,,,,,,,,
+JUPA,Juncus patens,N,,,,,,,,,
+JUPH,Juncus phaeocephalus ,N,,,,,,,,,
+LACO,Laennecia coulteri,N,,,,,,,,,
+LASE,Lactuca serriola,E,,,,,,,,,
+LUSU,Lupinus succulentus ,N,,,,,,,,,
+LYHY,Lythrum hyssopifolia,E,,,,,,,,,
+MALE,Malvella leprosa,N,,,,,,,,,
+MAPA,Malva parviflora,E,,,,,,,,,
+MEIN,Melilotus indicus,E,,,,,,,,,
+MELU,Medicago lupulina,E,,,,,,,,,
+MEPO,Medicago polymorpha,E,,,,,,,,,
+OXCA,Oxalis californica,N,,,,,,,,,
+PAIN,Paraphalis incurva ,E,,,,,,,,,
+PHLE,Phalaris lemmonii,N,,,,,,,,,
+POAVDE,Polyganum aviculare ssp.depressum ,E,,,,,,,,,
+POIN,Polypogon interruptus,E,,,,,,,,,
+POMO,Polypogon monospeliensis,E,,,,,,,,,
+PSBR,Psilocarphus brevissimus,N,,,,,,,,,
+PSLUAL,Pseudognaphalium luteoalbum ,E,,,,,,,,,
+RUCR,Rumex crispus,E,,,,,,,,,
+RUSA,Rumex salicifolius,N,,,,,,,,,
+SEVU,Senecio vulgaris,E,,,,,,,,,
+SIBE,Sisyrinchium bellum,N,,,,,,,,,
+SOOL,Sonchus oleraceus ,E,,,,,,,,,
+SPSP,Spergularia species,E,,,,,,,,,
+STPU,Stipa pulchra,N,,,,,,,,,
+SYSU,Symphyotrichum subulatum,N,,,,,,,,,
+TRHI,Trifolium hirtum,E,,,,,,,,,
+UNKGRASS,Unknown exotic grass,E,,,,,,,,,
+VELA,Verbena lasiostachys,N,,,,,,,,,
+VISA,Vicia sativa,E,,,,,,,,,
+VIVI,Vicia villosa,E,,,,,,,,,
+ZEMU,Zeltnera muehlenbergii,N,,,,,,,,,
+VISP,Vicia species,E,,,,,,,,,
+LOGA,Logfia gallica,E,,,,,,,,,
+BARE,bare ground,,,,,,,,,,
+THATCH,thatch,,,,,,,,,,
+POTE,Polycarpon tetraphyllum,E,,,,,,,,,
+ATSE,Atriplex semibaccata,E,,,,,,,,,
+BAPI,Baccharis pilularis,N,,,,,,,,,
+BRCA,Bromus carinatus,N,,,,,,,,,
+BRSP,Bromus sp,E,,,,,,,,,
+CAMA,Calystegia macrostegia,N,,,,,,,,,
+COFI,Corethrogyne filaginifolia,N,,,,,,,,,
+ELCO,Elymus condensatus,N,,,,,,,,,
+EPCA,Epilobium canum,N,,,,,,,,,
+ERSP,Erigeron sp,N,,,,,,,,,
+ERSU,Erigeron sumatrensis,E,,,,,,,,,
+FOVU,Foeniculum vulgare,E,,,,,,,,,
+ISCE,Isolepis cernua,N,,,,,,,,,
+JUTE,Juncus textilis,N,,,,,,,,,
+LENI,Lepidium nitidum,N,,,,,,,,,
+LUMI,Lupinus microcarpus,N,,,,,,,,,
+LYAR,Lysimachia arvensis,E,,,,,,,,,
+POTE,Polycarpon tetraphyllum,E,,,,,,,,,
+PSLU,Pseudognaphalium luteoalbum,E,,,,,,,,,
+RASA,Raphanus sativus,E,,,,,,,,,
+SATR,Salsola tragus,E,,,,,,,,,
+SCAM,Schoenoplectus americanus,N,,,,,,,,,
+SCPU,Schoenoplectus pungens,N,,,,,,,,,
+SOAS,Sonchus asper,E,,,,,,,,,
+SOSP,Sonchus sp,E,,,,,,,,,
+VUMY,Festuca myuros ,E,,,,,,,,,
+MESP,Melilotus sp,,,,,,,,,,
+POAN,Poa annua,E,,,,,,,,,
+OXPE,Oxalis pes-caprae,E,,,,,,,,,
+LEDI,Lepidium didymum,E,,,,,,,,,
+EHER,Ehrharta erecta,E,,,,,,,,,
+SPMA,Spergularia macrotheca or marina,N,,,,,,,,,
+CEMU,Centaurium muehlenbergii,N,,,,,,,,,
+ERCO,Eriophyllum confertiflorum,N,,,,,,,,,
+GAAP,Galium aparine,N,,,,,,,,,
+EUPU,Euphorbia peplus,E,,,,,,,,,
+COSU,Erigeron sumatrensis,E,,,,,,,,,
+AVFA,Avena fatua,E,,,,,,,,,
+ERBO,Erigeron bonariensis,E,,,,,,,,,
+RUAC,Rumex acetosella,E,,,,,,,,,
+UNK GRASS,Unknown exotic grass,E,,,,,,,,,
+MEIM/STPU,Stipa pulchra,N,,,,,,,,,
+PLLA,Plantago lanceolata,E,,,,,,,,,
+ERAR,Eryngium armatum,N,,,,,,,,,
+UNKNOWN GRASS,Unknown exotic grass,E,,,,,,,,,
+POAV,Polyganum aviculare ssp.depressum ,E,,,,,,,,,
+RUAS,Rumex acetosella,E,,,,,,,,,
+CETE,Centaurium tenuiflorum,E,,,,,,,,,
+CAOL,Cardamine oligosperma,N,,,,,,,,,
+CRAQ,Crassula aquatica,N,,,,,,,,,
+,Ambrosia psylostachya,N,,,,,,,,,
+,Anagalis arvensis,E,,,,,,,,,
+,Artemesis douglasiana,N,,,,,,,,,
+,Aster subulatus,N,,,,,,,,,
+,Atriplex coulteri,N,,,,,,,,,
+,Atriplex lentiformes,N,,,,,,,,,
+,Avena barbata,E,,,,,,,,,
+,Brodiea jolonensis,N,,,,,,,,,
+,Bromus hordeaceous,E,,,,,,,,,
+,Camissonia cheirthifolia,N,,,,,,,,,
+,Cammisonia micrantha,N,,,,,,,,,
+,Camissonia sp.,N,,,,,,,,,
+,Capsella bursa-pastoris,E,,,,,,,,,
+,Carpobrotus edulis,E,,,,,,,,,
+,Castilleja exserta,N,,,,,,,,,
+,Centromadia parryi ssp. aust.,N,,,,,,,,,
+,Centromadia parryi ssp.australis,N,,,,,,,,,
+,Centuarium muehlenbergii,N,,,,,,,,,
+,Centunculus minimus,N,,,,,,,,,
+,Centurium muehlenbergii,N,,,,,,,,,
+,Chamaesyce maculata,E,,,,,,,,,
+,Chamomilla suaveolens,E,,,,,,,,,
+,Convolvulus arvensis,E,,,,,,,,,
+,Conyza canadensis,N,,,,,,,,,
+,Conyza coulteri,N,,,,,,,,,
+,Coronopus didymus,E,,,,,,,,,
+,Cotula australis,E,,,,,,,,,
+,Cotula coronopofolia,E,,,,,,,,,
+,Cynodon dactylon,E,,,,,,,,,
+,Cyperus strigosus? (nut sedge),N,,,,,,,,,
+,Echinochloa crusgalli,E,,,,,,,,,
+,Elatine brachysperma,N,,,,,,,,,
+,Eleocharis acicularis,N,,,,,,,,,
+,Eleocharis macrostachya,N,,,,,,,,,
+,Eremocarpus setigerus,N,,,,,,,,,
+,Eriogonum parvifolium,N,,,,,,,,,
+,Erodium botrys,E,,,,,,,,,
+,Euthamia occidentalis,E,,,,,,,,,
+,Gnaphalium luteo-album,E,,,,,,,,,
+,Grindelia camporum,N,,,,,,,,,
+,Hemizonia parryi ssp. Australis,N,,,,,,,,,
+,Hazardia squarrosa,N,,,,,,,,,
+,Hordeum br. ssp. br.,N,,,,,,,,,
+,Hordeum br. ssp. ca.,N,,,,,,,,,
+,Hordeum marinum,E,,,,,,,,,
+,Isocoma menziesii,N,,,,,,,,,
+,Lolium multiflorum,E,,,,,,,,,
+,Lessingia filaginafolia,N,,,,,,,,,
+,Lupinus bicolor,N,,,,,,,,,
+,Lythrum hyssopifolium,E,,,,,,,,,
+,Nassella pulchra,N,,,,,,,,,
+,Oxalis albicans,N,,,,,,,,,
+,Plagiobothrys undulates,N,,,,,,,,,
+,Plantago elongata,N,,,,,,,,,
+,Polygonum arenastrum,E,,,,,,,,,
+,Polypogon monspeliensis,E,,,,,,,,,
+,Portulaca oleracea,E,,,,,,,,,
+,Rhaphanus sativus,E,,,,,,,,,
+,Scirpus californicus,N,,,,,,,,,
+,Scirpus cernus,N,,,,,,,,,
+,Scirpus maritimus,N,,,,,,,,,
+,Sencio vulgares,E,,,,,,,,,
+,Sisymbrium irio,E,,,,,,,,,
+,Sonchus,E,,,,,,,,,
+,Spergularia macrotheca,N,,,,,,,,,
+,Stachys ajugoides,N,,,,,,,,,
+,Taraxacum officinale,E,,,,,,,,,
+,Urtica urens,E,,,,,,,,,
+,Vicia sp.,E,,,,,,,,,
+,Vulpia sp.,E,,,,,,,,,

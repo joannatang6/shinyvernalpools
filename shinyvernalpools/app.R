@@ -14,6 +14,61 @@ library(RColorBrewer)
 library(knitr)
 library(kableExtra)
 
+# Manzanita data organization
+
+## Read in data
+manzanita_veg_master <- read_csv("manzanita_03_06_copy.csv")
+metadata_master <- read_csv("manz_metadata.csv")
+
+## Reformat metadata so it can be full_join-ed to data
+metadata <- metadata_master %>% 
+  rename(Species_Abbr = Species, Species = Species_Full_Name)
+
+## Convert manzanita_03_06 into tidy format, join with species metadata, convert day/month/year columns to "date" column, replace NAs with 0s
+manzanita_veg <- gather(filter(manzanita_veg_master, Pool != "NA"), key = "Transect_Distance", value = "Percent_Cover", -c(Pool, Day, Month, Year, Species, Transect_Direction))
+manzanita_veg <- full_join(manzanita_veg, metadata) %>% 
+  mutate(date = paste(Month, Year, sep="-" )) %>% 
+  mutate_all(funs(replace(., is.na(.), 0)))
+
+## Make separate dataframes for each pool
+
+san_miguel_veg <- filter(manzanita_veg, Pool == "San Miguel")
+
+santa_cruz_veg <- filter(manzanita_veg, Pool == "Santa Cruz")
+
+santa_rosa_veg <- filter(manzanita_veg, Pool == "Santa Rosa")
+
+santa_barbara_veg <- filter(manzanita_veg, Pool == "Santa Barbara")
+
+santa_catalina_veg <- filter(manzanita_veg, Pool == "Santa Catalina")
+
+
+# Manzanita data wrangling
+## Aggregate San Miguel data
+san_miguel_veg_summary <- san_miguel_veg %>% 
+  filter(Percent_Cover != "x") %>% 
+  mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
+  group_by(Pool, Species, date, Native_Status, Year) %>% 
+  summarize(
+    mean_percentage = mean(Percent_Cover)
+  )
+
+## Native vs. exotic San Miguel data
+san_miguel_native <- san_miguel_veg_summary %>% 
+  group_by(Pool, Native_Status, date, Year) %>% 
+  summarize(
+    total = sum(mean_percentage)
+  ) %>%
+  filter(Native_Status != 0)
+veg_line <- ggplot(san_miguel_native, aes(x = date)) +
+  geom_line(aes(y = total, color = Native_Status, group = Native_Status)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+veg_line
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   theme = shinytheme("cerulean"),
@@ -77,7 +132,7 @@ ui <- fluidPage(
                           
                           selectInput("pool", 
                                       "Select vernal pool:",
-                                      choices = c("Manzanita: San Miguel","Manzanita: Santa Rosa","Manzanita: Santa Cruz", "Manzanita: Santa Barbara", "Manzanita: Santa Catalina")),
+                                      choices = c("San Miguel","Manzanita: Santa Rosa","Manzanita: Santa Cruz", "Manzanita: Santa Barbara", "Manzanita: Santa Catalina")),
                           
                           radioButtons("year", 
                                        "Select year:",
@@ -119,11 +174,33 @@ ui <- fluidPage(
                         mainPanel(
                           plotOutput("graph")
                         )
+                      )),
+             
+             
+             # Tab 5: Vegetation line graphs
+             
+             tabPanel("Pool Vegetation Trends",
+                      h1("Pool Vegetation Trends"),
+                      h2("Vegetation Monitoring Data"),
+                      p("Vegetation data is collected in the summer via transect sampling.  Each pool has a permanent transect running along the diameter of the pool.  Meter-square quadrats are placed every 2 meters.  In each quadrat, percent cover of each plant species present is recorded."),
+                      
+                      # Sidebar with a select input for pool and radio button input for year 
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput("pool", 
+                                      "Select vernal pool:",
+                                      choices = c("San Miguel","Manzanita: Santa Rosa","Manzanita: Santa Cruz", "Manzanita: Santa Barbara", "Manzanita: Santa Catalina"))
+                        ),
+                        
+                        # Show a plot of the generated column graph
+                        mainPanel(
+                          plotOutput(veg_line)
+                        )
                       ))
              
-  )
+  ))
   
-)
+
 
 
 
@@ -135,78 +212,32 @@ ui <- fluidPage(
 
 # Define server logic required to draw a line graph
 server <- function(input, output) {
-  
   output$hydroperiod <- renderPlot({
     # generate pool based on input$pool from ui.R (X replace faithful with df)
     ggplot(faithful, aes(x = waiting, y = eruptions)) +
       geom_point(color = input$year) +
       geom_line(color = input$year)
-    
   })
   
   output$veg_col <- renderPlot({
     # generate pool based on input$pool from ui.R (X replace faithful with df)
-    
-    # Manzanita data wrangling
-    
-    # Read in data
-    manzanita_veg_master <- read_csv("manzanita_03_06.csv")
-    metadata_master <- read_csv("metadata.csv")
-    
-    # Reformat metadata so it can be full_join-ed to data
-    metadata <- metadata_master %>% 
-      rename(Species_Abbr = Species, Species = Species_Full_Name)
-    
-    # Convert manzanita_03_06 into tidy format, join with species metadata, convert day/month/year columns to "date" column, replace NAs with 0s
-    manzanita_veg <- gather(filter(manzanita_veg_master, Pool != "NA"), key = "Transect_Distance", value = "Percent_Cover", -c(Pool, Day, Month, Year, Species, Transect_Direction))
-    manzanita_veg <- full_join(manzanita_veg, metadata) %>% 
-      mutate(date = paste(Month, Year, sep="-" )) %>% 
-      mutate_all(funs(replace(., is.na(.), 0)))
-    
-    # Make separate dataframes for each pool
-    
-    san_miguel_veg <- filter(manzanita_veg, Pool == "San Miguel")
-    
-    santa_cruz_veg <- filter(manzanita_veg, Pool == "Santa Cruz")
-    
-    santa_rosa_veg <- filter(manzanita_veg, Pool == "Santa Rosa")
-    
-    santa_barbara_veg <- filter(manzanita_veg, Pool == "Santa Barbara")
-    
-    santa_catalina_veg <- filter(manzanita_veg, Pool == "Santa Catalina")
-    
-    # Manzanita: San Miguel
-    # Aggregate San Miguel data
-    san_miguel_veg_summary <- san_miguel_veg %>% 
-      group_by(Species, date, Native_Status) %>% 
-      summarize(
-        mean_percentage = mean(Percent_Cover)
-      )
-    
-    # Aggregate percentages
-    san_miguel_line <- ggplot(san_miguel_veg_summary, aes(x = date, y = mean_percentage)) +
-      geom_line(aes(color = Species, group = Species)) +
+    ggplot(san_miguel_native, aes_string(x = input$x)) +
+      geom_line(aes(y = total, color = Native_Status, group = Native_Status)) +
+      theme_classic() +
       theme(axis.text.x = element_text(angle = 90)) +
+      scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
+      scale_y_continuous(expand = c(0,0)) +
       labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
-    san_miguel_line
-    
-    # Native vs. exotic
-    san_miguel_native <- san_miguel_veg_summary %>% 
-      group_by(Native_Status, date) %>% 
-      summarize(
-        total = sum(mean_percentage)
-      ) %>%
-      filter(Native_Status != 0)
-    
-    # Aggregate
-    san_miguel_native_line <- ggplot(san_miguel_native, aes(x = date, y = total)) +
-      geom_line(aes(color = Native_Status, group = Native_Status)) +
+  })
+  
+  output$veg_line <- renderPlot({
+    ggplot(san_miguel_native, aes_string(x = input$x)) +
+      geom_line(aes(y = total, color = Native_Status, group = Native_Status)) +
+      theme_classic() +
       theme(axis.text.x = element_text(angle = 90)) +
+      scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
+      scale_y_continuous(expand = c(0,0)) +
       labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
-    san_miguel_native_line
-    
-    ggplot(faithful, aes(x = waiting, y = eruptions)) +
-      geom_col(color = input$year)
   })
 }
 
