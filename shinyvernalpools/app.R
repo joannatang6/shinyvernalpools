@@ -30,22 +30,11 @@ manzanita_veg <- full_join(manzanita_veg, metadata) %>%
   mutate(date = paste(Month, Year, sep="-" )) %>% 
   mutate_all(funs(replace(., is.na(.), 0)))
 
-## Make separate dataframes for each pool
-
-san_miguel_veg <- filter(manzanita_veg, Pool == "San Miguel")
-
-santa_cruz_veg <- filter(manzanita_veg, Pool == "Santa Cruz")
-
-santa_rosa_veg <- filter(manzanita_veg, Pool == "Santa Rosa")
-
-santa_barbara_veg <- filter(manzanita_veg, Pool == "Santa Barbara")
-
-santa_catalina_veg <- filter(manzanita_veg, Pool == "Santa Catalina")
-
 
 # Manzanita data wrangling
 ## Aggregate San Miguel data
-san_miguel_veg_summary <- san_miguel_veg %>% 
+san_miguel_veg_summary <- manzanita_veg %>% 
+  filter(Pool == "San Miguel") %>% 
   filter(Percent_Cover != "x") %>% 
   mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
   group_by(Pool, Species, date, Native_Status, Year) %>% 
@@ -86,7 +75,7 @@ ui <- fluidPage(
                       p("The Cheadle Center for Biodiversity Ecological Restoration (CCBER) has been creating and restoring vernal pools in and around UCSB since the mid-1980s."),
                       p("There are 6 sites with vernal pools: Manzanita, West Campus Bluffs, North Parcel, South Parcel, North Campus Open Space, and Sierra Madre."),
                       h2("Map of CCBER Vernal Pools"),
-                      p("Insert map...")
+                      img(src="manzanita_map.png", align = "left", height = 500)
                       
              ),
              
@@ -194,7 +183,8 @@ ui <- fluidPage(
                         
                         # Show a plot of the generated column graph
                         mainPanel(
-                          plotOutput(veg_line)
+                          plotOutput(veg_line),
+                          img(src="graph.png", align = "left")
                         )
                       ))
              

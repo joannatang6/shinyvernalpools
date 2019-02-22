@@ -1,0 +1,101 @@
+---
+title: "data_wrangling"
+author: "Joanna Tang"
+date: "2/21/2019"
+output: html_document
+---
+
+```{r include = FALSE}
+
+# Loading packages, read in data
+library(shiny)
+library(tidyverse)
+library(shinythemes)
+library(RColorBrewer)
+library(knitr)
+library(kableExtra)
+
+manzanita_veg_master <- read_csv("manzanita_03_06_copy.csv")
+metadata_master <- read_csv("manz_metadata.csv")
+manzanita_hydro_master <- read_csv("manzanita_hydro_02_03.csv")
+
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+
+# Tidying up data
+
+# Reformat metadata so it can be full_join-ed to data
+metadata <- metadata_master %>% 
+  rename(Species_Abbr = Species, Species = Species_Full_Name)
+
+# Convert manzanita_03_06 into tidy format, join with species metadata, convert day/month/year columns to "date" column, replace NAs with 0s
+manzanita_veg <- gather(filter(manzanita_veg_master, Pool != "NA"), key = "Transect_Distance", value = "Percent_Cover", -c(Pool, Day, Month, Year, Species, Transect_Direction))
+manzanita_veg <- full_join(manzanita_veg, metadata) %>% 
+  mutate(date = paste(Month, Year, sep="-" )) %>% 
+  mutate_all(funs(replace(., is.na(.), 0)))
+
+# Convert manzanita_hydro_02_03 into tidy format
+manzanita_hydro <- manzanita_hydro_master %>% 
+  gather(key = "Pool", value = "Depth", -c(start_date, end_date))
+
+```
+
+# Hydro data
+
+```{r}
+
+```
+
+
+
+# San Miguel Veg data
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+
+# Aggregate San Miguel veg data
+san_miguel_veg_summary <- manzanita_veg %>% 
+  filter(Pool == "San Miguel") %>% 
+  filter(Percent_Cover != "x") %>% 
+  mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
+  group_by(Pool, Species, date, Native_Status, Year) %>% 
+  summarize(
+    mean_percentage = mean(Percent_Cover)
+  )
+
+# Aggregate percentages
+san_miguel_line <- ggplot(san_miguel_veg_summary, aes(x = Year, y = mean_percentage)) +
+  geom_line(aes(color = Species, group = Species)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+san_miguel_line
+
+# Central zone percentages
+
+
+# Transition zone percentages
+
+
+# Upland zone percentages
+
+
+# Native vs. exotic
+san_miguel_native <- san_miguel_veg_summary %>% 
+  group_by(Pool, Native_Status, date, Year) %>% 
+  summarize(
+    total = sum(mean_percentage)
+  ) %>%
+  filter(Native_Status != 0)
+
+
+# Aggregate
+san_miguel_native_line <- ggplot(san_miguel_native, aes(x = date, y = total)) +
+  geom_line(aes(color = Native_Status, group = Native_Status)) +
+   theme_classic() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+san_miguel_native_line
+
+```
