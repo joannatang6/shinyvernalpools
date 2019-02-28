@@ -45,6 +45,22 @@ manzanita_hydro <- manzanita_hydro_master %>%
 
 ```{r}
 
+# Convert hydro data into contingency table for Shiny
+rownames(manzanita_hydro_master) <- manzanita_hydro_master$start_date
+
+san_miguel_hydro <- manzanita_hydro %>% 
+  filter(Pool == "San Miguel") %>% 
+  ggplot(aes(x = start_date, y = Depth)) +
+  geom_col(fill = "darkblue") +
+  geom_path(aes(group = NULL)) +
+    labs(title = "Hydroperiod", y = "Depth (in)", x = "Date") +
+  theme_classic() +
+  scale_y_continuous(expand = c(0,0), lim = c(0, 17)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+san_miguel_hydro
+
+
 ```
 
 
@@ -62,6 +78,20 @@ san_miguel_veg_summary <- manzanita_veg %>%
   summarize(
     mean_percentage = mean(Percent_Cover)
   )
+
+# Veg col
+san_miguel_col <- san_miguel_veg_summary %>% 
+  filter(Year == "2005") %>% 
+  filter(Native_Status == "N" | Native_Status == "E") %>% 
+  ggplot(aes(x = Species, y = mean_percentage)) +
+  geom_col(aes(fill = Native_Status)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_fill_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(title = "Percent Cover", x = "Species", y = "Mean Percent Cover")
+san_miguel_col
+
 
 # Aggregate percentages
 san_miguel_line <- ggplot(san_miguel_veg_summary, aes(x = Year, y = mean_percentage)) +

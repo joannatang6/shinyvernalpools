@@ -103,7 +103,8 @@ ui <- fluidPage(
                         
                         # Show a plot of the generated hydroperiod
                         mainPanel(
-                          plotOutput("hydroperiod")
+                          plotOutput("hydroperiod"),
+                          img(src="hydro.png", align = "left")
                         )
                       )),
              
@@ -130,7 +131,8 @@ ui <- fluidPage(
                         
                         # Show a plot of the generated column graph
                         mainPanel(
-                          plotOutput("veg_col")
+                          plotOutput("veg_col"),
+                          img(src="veg_col.png", align = "left")
                         )
                       )),
              
@@ -204,9 +206,15 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$hydroperiod <- renderPlot({
     # generate pool based on input$pool from ui.R (X replace faithful with df)
-    ggplot(faithful, aes(x = waiting, y = eruptions)) +
-      geom_point(color = input$year) +
-      geom_line(color = input$year)
+    p <- ggplot(unannualized_subset(), aes(x = stock)) + 
+      geom_histogram(binwidth=.005, fill = "#383837") + 
+      geom_density(color="blue", fill="white", alpha=.03) + 
+      scale_x_continuous(labels=percent) + 
+      scale_y_discrete(breaks=pretty_breaks()) + 
+      labs(x = paste(toupper(input$ticker), " returns"), y = "observations",
+           title = paste(toupper(input$ticker), " ", input$freq, " returns distribution (", dates_out()[[1]], " to ", dates_out()[[2]], ")\n", sep="")) + 
+      ggplot_theme
+    print(p)
   })
   
   output$veg_col <- renderPlot({
