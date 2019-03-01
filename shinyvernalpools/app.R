@@ -85,7 +85,7 @@ ui <- fluidPage(
                       sidebarLayout(
                         sidebarPanel(
                           
-                          selectInput("pool", 
+                          selectInput("hydro_pool", 
                                       "Select vernal pool:",
                                       c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")),
                           dateRangeInput("dates",
@@ -113,7 +113,7 @@ ui <- fluidPage(
            sidebarLayout(
              sidebarPanel(
                
-               selectInput("pool", 
+               selectInput("veg_pool", 
                            "Select vernal pool:",
                            c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")
                ),
@@ -144,7 +144,7 @@ ui <- fluidPage(
            # Sidebar with a select input for pool and radio button input for year 
            sidebarLayout(
              sidebarPanel(
-               selectInput("pool", 
+               selectInput("ne_pool", 
                            "Select vernal pool:",
                            c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")),
                dateRangeInput("dates",
@@ -174,7 +174,7 @@ server <- function(input, output) {
   output$hydroperiod <- renderPlot({
     # generate pool based on input$pool from ui.R
     hydro <- manzanita_hydro %>% 
-      filter(Pool == input$pool)
+      filter(Pool == input$hydro_pool)
     
       ggplot(hydro, aes(x = start_date, y = Depth)) +
       geom_col(fill = "darkblue") +
@@ -191,7 +191,7 @@ server <- function(input, output) {
   output$veg_col <- renderPlot({
     # generate pool based on input$pool from ui.R
     veg <- manzanita_veg %>% 
-      filter(Pool == input$pool) %>% 
+      filter(Pool == input$veg_pool) %>% 
       filter(Percent_Cover != "x") %>% 
       mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
       group_by(Pool, Species, date, Native_Status, Year) %>% 
@@ -215,7 +215,7 @@ server <- function(input, output) {
   
   output$veg_line <- renderPlot({
     ne <- ne_df %>% 
-      filter(Pool == input$pool)
+      filter(Pool == input$ne_pool)
       
       ggplot(ne, aes(x = date, y = total)) +
       geom_line(aes(color = Native_Status, group = Native_Status)) +
