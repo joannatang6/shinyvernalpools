@@ -19,6 +19,8 @@ library(kableExtra)
 ## Read in data
 manzanita_veg_master <- read_csv("manzanita_03_06_copy.csv")
 metadata_master <- read_csv("manz_metadata.csv")
+manzanita_hydro_master <- read_csv("manzanita_hydro_02_03.csv")
+
 
 ## Reformat metadata so it can be full_join-ed to data
 metadata <- metadata_master %>% 
@@ -31,54 +33,46 @@ manzanita_veg <- full_join(manzanita_veg, metadata) %>%
   mutate_all(funs(replace(., is.na(.), 0)))
 
 
-# Manzanita data wrangling
-## Aggregate San Miguel data
-san_miguel_veg_summary <- manzanita_veg %>% 
-  filter(Pool == "San Miguel") %>% 
+## Convert manzanita_hydro_master into tidy format
+manzanita_hydro <- manzanita_hydro_master %>% 
+  gather(key = "Pool", value = "Depth", -c(start_date, end_date))
+
+## Make data frame for total native cover and total exotic cover
+ne_df <- manzanita_veg %>% 
   filter(Percent_Cover != "x") %>% 
+  filter(Pool != "0") %>% 
   mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
   group_by(Pool, Species, date, Native_Status, Year) %>% 
   summarize(
-    mean_percentage = mean(Percent_Cover)
-  )
-
-## Native vs. exotic San Miguel data
-san_miguel_native <- san_miguel_veg_summary %>% 
+    mean = mean(Percent_Cover)
+  ) %>% 
   group_by(Pool, Native_Status, date, Year) %>% 
   summarize(
-    total = sum(mean_percentage)
+    total = sum(mean)
   ) %>%
   filter(Native_Status != 0)
-veg_line <- ggplot(san_miguel_native, aes(x = date)) +
-  geom_line(aes(y = total, color = Native_Status, group = Native_Status)) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 90)) +
-  scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
-  scale_y_continuous(expand = c(0,0)) +
-  labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
-veg_line
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   theme = shinytheme("cerulean"),
   
   # Application title
-  titlePanel("CCBER Vernal Pools"),
+  titlePanel("CCBER's Manzanita Village Vernal Pools"),
   
   navbarPage("Welcome!",
              
              # Tab 1: Summary and map
              
-             tabPanel("Summary/Map",
-                      h1("Summary/Map"),
+             tabPanel("Summary",
+                      h1("Summary"),
                       h2("Summary"),
-                      p("The Cheadle Center for Biodiversity Ecological Restoration (CCBER) has been creating and restoring vernal pools in and around UCSB since the mid-1980s."),
-                      p("There are 6 sites with vernal pools: Manzanita, West Campus Bluffs, North Parcel, South Parcel, North Campus Open Space, and Sierra Madre."),
-                      h2("Map of CCBER Vernal Pools"),
+                      p("Vernal pool restoration around UCSB has been ocurring since the mid-1980s.  The Cheadle Center for Biodiversity Ecological Restoration (CCBER) was formed in 2005 as the official mitigation engine for UCSB.  As UCSB continues to expand its campus and student/faculty housing, CCBER has been tasked with implementing restoration projects as mitigation."),
+                      p("The vernal pools at Manzanita Village were created in 2005."),
+                      h2("Map of Manzanita Village Vernal Pools"),
                       img(src="manzanita_map.png", align = "left", height = 500)
                       
              ),
-             
              
              # Tab 2: Hydroperiod line graphs
              
@@ -93,7 +87,7 @@ ui <- fluidPage(
                           
                           selectInput("pool", 
                                       "Select vernal pool:",
-                                      choices = c("Manzanita: San Miguel","Manzanita: Santa Rosa","Manzanita: Santa Cruz", "Manzanita: Santa Barbara", "Manzanita: Santa Catalina")),
+                                      c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")),
                           dateRangeInput("dates",
                                          label = "Select date range"),
                           
@@ -103,140 +97,136 @@ ui <- fluidPage(
                         
                         # Show a plot of the generated hydroperiod
                         mainPanel(
-                          plotOutput("hydroperiod"),
-                          img(src="hydro.png", align = "left")
+                          plotOutput("hydroperiod")
                         )
                       )),
-             
              
              # Tab 3: Vegetation column graphs
-
-             tabPanel("Pool Vegetation Composition",
-                      h1("Pool Vegetation Composition"),
-                      h2("Vegetation Monitoring Data"),
-                      p("Vegetation data is collected in the summer via transect sampling.  Each pool has a permanent transect running along the diameter of the pool.  Meter-square quadrats are placed every 2 meters.  In each quadrat, percent cover of each plant species present is recorded."),
-                      
-                      # Sidebar with a select input for pool and radio button input for year 
-                      sidebarLayout(
-                        sidebarPanel(
-                          
-                          selectInput("pool", 
-                                      "Select vernal pool:",
-                                      choices = c("San Miguel","Manzanita: Santa Rosa","Manzanita: Santa Cruz", "Manzanita: Santa Barbara", "Manzanita: Santa Catalina")),
-                          
-                          radioButtons("year", 
-                                       "Select year:",
-                                       choices = c("2005","2006","2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"))
-                        ),
-                        
-                        # Show a plot of the generated column graph
-                        mainPanel(
-                          plotOutput("veg_col"),
-                          img(src="veg_col.png", align = "left")
-                        )
-                      )),
-             
-             
-             # Tab 4: North Parcel
-             
-             tabPanel("North Parcel",
-                      h1("North Parcel"),
-                      h2("Hydroperiod Data"),
-                
-                      
-                      # Sidebar with a select input for pool and date range input 
-                      sidebarLayout(
-                        sidebarPanel(
-                          
-                          selectInput("pool", 
-                                      "Select vernal pool:",
-                                      choices = c("Phase 1", "Tadpole", "Redtail", "Whitetail 1", "Whitetail 2", "Creekside", "Mini South")),
-                          dateRangeInput("dates",
-                                         label = "Select date range"),
-                          
-                          hr(),
-                          fluidRow(column(4, verbatimTextOutput("value"))),
-                          radioButtons("graph", 
-                                       "Select graph:",
-                                       choices = c("Hydroperiod", "Vegetation Composition"))
-                        ),
-                        
-                        # Show a plot of the generated hydroperiod
-                        mainPanel(
-                          plotOutput("graph")
-                        )
-                      )),
-             
-             
-             # Tab 5: Vegetation line graphs
-             
-             tabPanel("Pool Vegetation Trends",
-                      h1("Pool Vegetation Trends"),
-                      h2("Vegetation Monitoring Data"),
-                      p("Vegetation data is collected in the summer via transect sampling.  Each pool has a permanent transect running along the diameter of the pool.  Meter-square quadrats are placed every 2 meters.  In each quadrat, percent cover of each plant species present is recorded."),
-                      
-                      # Sidebar with a select input for pool and radio button input for year 
-                      sidebarLayout(
-                        sidebarPanel(
-                          selectInput("pool", 
-                                      "Select vernal pool:",
-                                      choices = c("San Miguel","Manzanita: Santa Rosa","Manzanita: Santa Cruz", "Manzanita: Santa Barbara", "Manzanita: Santa Catalina"))
-                        ),
-                        
-                        # Show a plot of the generated column graph
-                        mainPanel(
-                          plotOutput(veg_line),
-                          img(src="graph.png", align = "left")
-                        )
-                      ))
-             
-  ))
   
+  tabPanel("Pool Vegetation Composition",
+           h1("Pool Vegetation Composition"),
+           h2("Vegetation Monitoring Data"),
+           p("Vegetation data is collected in the summer via transect sampling.  Each pool has a permanent transect running along the diameter of the pool.  Meter-square quadrats are placed every 2 meters.  In each quadrat, percent cover of each plant species present is recorded."),
+           p("In the graph below, the arithmetic mean percent cover of each species over all transect samples is shown."),
+           
+           # Sidebar with a select input for pool and radio button input for year 
+           sidebarLayout(
+             sidebarPanel(
+               
+               selectInput("pool", 
+                           "Select vernal pool:",
+                           c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")
+               ),
+               selectInput("year", 
+                           "Select year:",
+                           c("2002","2003","2004", "2005", "2006")
+               )
+             ),
+             
+             # Show a plot of the generated column graph
+             mainPanel(
+               plotOutput(outputId = "veg_col")
+             )
+             
+             )),
+  
+  
+  
+  
+  # Tab 5: Native vs. exotic species line graphs
+  
+  tabPanel("Native vs. Exotic Vegetation Trends",
+           h1("Native vs. Exotic Vegetation Trends"),
+           h2("Vegetation Monitoring Data"),
+           p("Vegetation data is collected in the summer via transect sampling.  Each pool has a permanent transect running along the diameter of the pool.  Meter-square quadrats are placed every 2 meters.  In each quadrat, percent cover of each plant species present is recorded."),
+           p("In the graph below, the total percent cover is calculated by summing the arithmetic mean percent cover of each species over all transect samples."),
+           
+           # Sidebar with a select input for pool and radio button input for year 
+           sidebarLayout(
+             sidebarPanel(
+               selectInput("pool", 
+                           "Select vernal pool:",
+                           c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")),
+               dateRangeInput("dates",
+                              label = "Select date range")
+             ),
+             
+             # Show a plot of the generated column graph
+             mainPanel(
+               plotOutput(outputId = "veg_line")
+               
+             )
+           ))
+  
+  
+  
+  
+  
+  
+  ))
 
 
 
-
-
-
-
-
-
-
-# Define server logic required to draw a line graph
+# Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  
   output$hydroperiod <- renderPlot({
-    # generate pool based on input$pool from ui.R (X replace faithful with df)
-    p <- ggplot(unannualized_subset(), aes(x = stock)) + 
-      geom_histogram(binwidth=.005, fill = "#383837") + 
-      geom_density(color="blue", fill="white", alpha=.03) + 
-      scale_x_continuous(labels=percent) + 
-      scale_y_discrete(breaks=pretty_breaks()) + 
-      labs(x = paste(toupper(input$ticker), " returns"), y = "observations",
-           title = paste(toupper(input$ticker), " ", input$freq, " returns distribution (", dates_out()[[1]], " to ", dates_out()[[2]], ")\n", sep="")) + 
-      ggplot_theme
-    print(p)
+    # generate pool based on input$pool from ui.R
+    hydro <- manzanita_hydro %>% 
+      filter(Pool == input$pool)
+    
+      ggplot(hydro, aes(x = start_date, y = Depth)) +
+      geom_col(fill = "darkblue") +
+      geom_path(aes(group = NULL)) +
+      labs(title = "Hydroperiod", y = "Depth (in)", x = "Date") +
+      theme_classic() +
+      scale_y_continuous(expand = c(0,0), lim = c(0, 17)) +
+      theme_classic() +
+      theme(axis.text.x = element_text(angle = 90))
   })
+  
+  
   
   output$veg_col <- renderPlot({
-    # generate pool based on input$pool from ui.R (X replace faithful with df)
-    ggplot(san_miguel_native, aes_string(x = input$x)) +
-      geom_line(aes(y = total, color = Native_Status, group = Native_Status)) +
+    # generate pool based on input$pool from ui.R
+    veg <- manzanita_veg %>% 
+      filter(Pool == input$pool) %>% 
+      filter(Percent_Cover != "x") %>% 
+      mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
+      group_by(Pool, Species, date, Native_Status, Year) %>% 
+      summarize(
+        mean = mean(Percent_Cover)
+      ) %>% 
+      filter(Year == "2005") %>% 
+      filter(Native_Status == "N" | Native_Status == "E")
+    
+    ggplot(veg, aes(x = Species, y = mean)) +
+      geom_col(aes(fill = Native_Status)) +
       theme_classic() +
       theme(axis.text.x = element_text(angle = 90)) +
-      scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
+      scale_fill_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
       scale_y_continuous(expand = c(0,0)) +
-      labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+      labs(title = "Percent Cover", x = "Species", y = "Mean Percent Cover")
+    
   })
   
+  
+  
   output$veg_line <- renderPlot({
-    ggplot(san_miguel_native, aes_string(x = input$x)) +
-      geom_line(aes(y = total, color = Native_Status, group = Native_Status)) +
+    ne <- ne_df %>% 
+      filter(Pool == input$pool)
+      
+      ggplot(ne, aes(x = date, y = total)) +
+      geom_line(aes(color = Native_Status, group = Native_Status)) +
       theme_classic() +
       theme(axis.text.x = element_text(angle = 90)) +
       scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
       scale_y_continuous(expand = c(0,0)) +
-      labs(title = "Percent Cover", x = "Date", y = "Mean Percent Cover")
+      labs(title = "Total Percent Cover of Natives and Exotics", x = "Date", y = "Percent Cover")
   })
+  
+  
 }
 
 # Run the application 
