@@ -41,6 +41,7 @@ manzanita_hydro <- manzanita_hydro_master %>%
 ne_df <- manzanita_veg %>% 
   filter(Percent_Cover != "x") %>% 
   filter(Pool != "0") %>% 
+  mutate(date = as.Date(date, "%m/%Y")) %>% 
   mutate(Percent_Cover = as.numeric(Percent_Cover)) %>% 
   group_by(Pool, Species, date, Native_Status, Year) %>% 
   summarize(
@@ -88,7 +89,7 @@ ui <- fluidPage(
                           selectInput("hydro_pool", 
                                       "Select vernal pool:",
                                       c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")),
-                          dateRangeInput("dates",
+                          dateRangeInput("dates_hydro",
                                          label = "Select date range"),
                           
                           hr(),
@@ -117,9 +118,9 @@ ui <- fluidPage(
                            "Select vernal pool:",
                            c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")
                ),
-               selectInput("year", 
+               radioButtons("year", 
                            "Select year:",
-                           c("2002","2003","2004", "2005", "2006")
+                           c("2003","2004", "2005", "2006")
                )
              ),
              
@@ -147,7 +148,7 @@ ui <- fluidPage(
                selectInput("ne_pool", 
                            "Select vernal pool:",
                            c("San Miguel","Santa Rosa","Santa Cruz", "Santa Barbara", "Santa Catalina")),
-               dateRangeInput("dates",
+               dateRangeInput("dates_ne",
                               label = "Select date range")
              ),
              
@@ -174,14 +175,16 @@ server <- function(input, output) {
   output$hydroperiod <- renderPlot({
     # generate pool based on input$pool from ui.R
     hydro <- manzanita_hydro %>% 
-      filter(Pool == input$hydro_pool)
+      filter(Pool == input$hydro_pool) %>% 
+      mutate(date = as.Date(start_date, "%m/%d/%y")) %>% 
+      filter(date == input$dates_hydro)
     
-      ggplot(hydro, aes(x = start_date, y = Depth)) +
-      geom_col(fill = "darkblue") +
-      geom_path(aes(group = NULL)) +
+      ggplot(hydro, aes(x = date, y = Depth)) +
+      geom_path(color = "darkblue", size = 1) +
       labs(title = "Hydroperiod", y = "Depth (in)", x = "Date") +
       theme_classic() +
       scale_y_continuous(expand = c(0,0), lim = c(0, 17)) +
+      scale_x_date(breaks = waiver(), date_breaks = "1 month") +
       theme_classic() +
       theme(axis.text.x = element_text(angle = 90))
   })
@@ -198,7 +201,7 @@ server <- function(input, output) {
       summarize(
         mean = mean(Percent_Cover)
       ) %>% 
-      filter(Year == "2005") %>% 
+      filter(Year == input$year) %>% 
       filter(Native_Status == "N" | Native_Status == "E")
     
     ggplot(veg, aes(x = Species, y = mean)) +
@@ -215,8 +218,9 @@ server <- function(input, output) {
   
   output$veg_line <- renderPlot({
     ne <- ne_df %>% 
-      filter(Pool == input$ne_pool)
-      
+      filter(Pool == input$ne_pool) %>% 
+      filter(date == input$dates_ne)
+    
       ggplot(ne, aes(x = date, y = total)) +
       geom_line(aes(color = Native_Status, group = Native_Status)) +
       theme_classic() +
