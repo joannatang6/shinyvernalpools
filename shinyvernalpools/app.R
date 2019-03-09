@@ -77,7 +77,10 @@ ui <- fluidPage(
                       mainPanel(width = 5,
                       h1("Summary"),
                       h2("Introduction"),
-                      p("Vernal pool restoration around UCSB has been ocurring since the mid-1980s.  The Cheadle Center for Biodiversity Ecological Restoration (CCBER) was formed in 2005 as the official mitigation engine for UCSB.  As UCSB continues to expand its campus and student/faculty housing, CCBER has been tasked with implementing restoration projects as mitigation."),
+                      h3("CCBER"),
+                      p("Vernal pool restoration around UCSB has been occurring since the mid-1980s.  The Cheadle Center for Biodiversity Ecological Restoration (CCBER) was formed in 2005 as the official mitigation engine for UCSB.  As UCSB continues to expand its campus and student/faculty housing, CCBER has been tasked with implementing restoration projects as mitigation.  These restoration projects often involve vernal pool restoratoin, as UCSB is built atop historic vernal pool habitat."),
+                      h3("What is a vernal pool?"),
+                      p("Vernal pools are seasonally flooded wetlands that form in small depressions in the landscape.  During California's cool, wet winters, rainwater pools in these depressions, where the rainwater is prevented from percolating deep into the soil by an impermeable subsurface soil layer such as a hardpan or a claypan.  These pools of water sustain specifically-adapted vernal pool flora and fauna: endemic flora grow and set seed quickly during the spring before the pool dries up in the summer, and endemic aquatic fauna spring to life during the wet season and go dormant as cysts during the dry season.  Because vernal pools have this highly dynamic seasonality, vernal pool ecosystems harbor a host of native and endangered flora and fauna, such as wooly meadowfoam (Limnanthes floccosa ssp. californica), San Diego mesa mint (Pogogyne abramsii), conservancy fairy shrimp (Branchinecta conservatio), and the California tiger salamander (Ambystoma californiense)."),
                       p("The vernal pools at Manzanita Village were created in 2005."),
                       h2("How to Use This App"),
                       p("...")
@@ -242,7 +245,7 @@ server <- function(input, output) {
     
     
       ggplot(ne, aes(x = as.character(Year), y = total)) +
-      geom_line(aes(color = Native_Status, group = Native_Status), size = 2) +
+      geom_line(aes(color = Native_Status, group = Native_Status), size = 1.5) +
       theme_classic() +
         theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 15), axis.text.y = element_text(size = 15), axis.title = element_text(size = 20), plot.title = element_text(size = 25)) +
       scale_color_manual(values = c("firebrick", "darkgreen"), name = "Native Status", label = c("Exotic", "Native")) +
